@@ -1,0 +1,22 @@
+h1 {
+    margin: 50px 0px 20px 80px;
+}
+
+p {
+    font-size: 25px;
+    margin: 0px 0px 0px 80px;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: 40% 60%;
+    width: 100vw;
+}
+
+.column1 {
+    background-color: #FF000000; /* Just for visualization */
+}
+  
+.column2 {
+    background-color: #00FF0000; /* Just for visualization */
+}
