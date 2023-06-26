@@ -1,17 +1,17 @@
-import HackerText from "../components/HackerText";
+import HackerText from "./components/HackerText";
 import "./App.css";
-import BasketballCaptcha from "../components/BasketballCaptcha";
+import BasketballCaptcha from "./components/BasketballCaptcha";
 import { useState } from "react";
 
 function App() {
-  const [ready, setReady] = useState(true);
+  const [ready, setReady] = useState(false);
 
   return (
     <div className="grid-container">
       <div className="column1">
         <HackerText
           messages={[
-            "Hey Erik",
+            "Hello, there",
             "Take a look at the cool canvas thing I built",
           ]}
           onEndEvent={() => setReady(true)}

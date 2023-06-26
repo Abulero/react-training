@@ -1,4 +1,4 @@
-import "../src/BasketballCaptcha.css";
+import "../BasketballCaptcha.css";
 
 class Ball {
   position: number[] = [0, 0];
