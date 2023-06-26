@@ -1,26 +1,25 @@
 import HackerText from "../components/HackerText";
 import "./App.css";
-import RegisterProcess from "../components/RegisterProcess";
+import BasketballCaptcha from "../components/BasketballCaptcha";
+import { useState } from "react";
 
 function App() {
-  let registerProcess = new RegisterProcess();
+  const [ready, setReady] = useState(true);
 
   return (
     <div className="grid-container">
       <div className="column1">
         <HackerText
           messages={[
-            "Hello, there.",
-            "Welcome to our online store",
-            "We have an assortment of different products",
-            "Let me tell you, they are really something",
-            "And today's your lucky day because everything is 99% off",
-            "But before you can use our discounts, please register",
+            "Hey Erik",
+            "Take a look at the cool canvas thing I built",
           ]}
-          onEndEvent={() => registerProcess.SetReadyToShow()}
+          onEndEvent={() => setReady(true)}
         />
       </div>
-      <div className="column2">{registerProcess.render()}</div>
+      <div className="column2">
+        <BasketballCaptcha ready={ready} />
+      </div>
     </div>
   );
 }

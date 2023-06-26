@@ -19,6 +19,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "components/HackerText.tsx", "components/RegisterProcess.tsx"],
+  "include": ["src", "components/HackerText.tsx", "components/BasketballCaptcha.tsx"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

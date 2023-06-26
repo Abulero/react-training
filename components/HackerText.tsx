@@ -11,7 +11,7 @@ function manageHackerTexts(messages: string[], onEndEvent: () => void) {
   let typingSpeed = 50;
 
   let textElements = getTextElements(messages);
-  let timer: number;
+  let timer: NodeJS.Timer;
   let currentTextElementIndex = 0;
   let currentTargetMessage = messages[currentTextElementIndex];
   let idleCursorCounter = 0;
@@ -140,7 +140,7 @@ function checkAddUnderline(
 function checkStayIdle(
   message: string,
   targetMessage: string,
-  timer: number,
+  timer: NodeJS.Timer,
   finishedTyping: boolean,
   updateText: () => void
 ) {

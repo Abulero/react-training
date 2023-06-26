@@ -9,14 +9,14 @@ p {
 
 .grid-container {
     display: grid;
-    grid-template-columns: 40% 60%;
+    grid-template-columns: 30% 70%;
     width: 100vw;
 }
 
 .column1 {
-    background-color: #FF000000; /* Just for visualization */
+    background-color: rgb(93, 86, 158, 0); /* Just for visualization */
 }
   
 .column2 {
-    background-color: #00FF0000; /* Just for visualization */
+    background-color: rgb(95, 158, 95, 0); /* Just for visualization */
 }
