@@ -1,13 +1,23 @@
 import React from "react";
 
-function HackerText(props: any) {
+type Props = {
+  stopText: boolean;
+  messages: string[];
+  onEndEvent: () => void;
+};
+
+function HackerText(props: Props) {
   let textElements = generateTextElements(props.messages);
-  manageHackerTexts(props.messages, props.onEndEvent);
+  manageHackerTexts(props.stopText, props.messages, props.onEndEvent);
 
   return <>{textElements}</>;
 }
 
-function manageHackerTexts(messages: string[], onEndEvent: () => void) {
+function manageHackerTexts(
+  stopText: boolean,
+  messages: string[],
+  onEndEvent: () => void
+) {
   let typingSpeed = 50;
 
   let textElements = getTextElements(messages);
@@ -20,8 +30,8 @@ function manageHackerTexts(messages: string[], onEndEvent: () => void) {
 
   function updateText() {
     let currentElement = textElements[currentTextElementIndex];
-
     let currentMessage: string;
+
     if (!textElements[currentTextElementIndex]) return;
 
     currentMessage = currentElement.innerHTML;
@@ -75,6 +85,8 @@ function manageHackerTexts(messages: string[], onEndEvent: () => void) {
     if (idleCursorCounter <= 3)
       textElements[currentTextElementIndex].innerHTML = currentMessage;
   }
+
+  if (stopText) return;
 
   React.useEffect(() => {
     timer = setInterval(updateText, typingSpeed);

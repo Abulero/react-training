@@ -47,9 +47,9 @@ var scoringPosition = false;
 var score = 0;
 var readyToScore = true;
 var retractDistance = 100;
-var trapScore = 5;
+var trapScore = 4;
 var canvasWidth = 1000;
-var canvasHeight = 500;
+var canvasHeight = 750;
 var timeLapse = 10;
 var gravity = 0.75;
 var currentGravity = gravity;
@@ -60,10 +60,10 @@ var attritionCoefficient = 0.95;
 var initialHoopX: number;
 var finalRetractedHoopX: number;
 
-var board: Form = new Form(canvasWidth * 0.9 - 2, canvasHeight * 0.2, 19, 90);
+var board: Form = new Form(canvasWidth * 0.9 - 2, canvasHeight * 0.35, 19, 90);
 var pole: Form = new Form(
   canvasWidth * 0.9,
-  canvasHeight * 0.2 + board.height,
+  canvasHeight * 0.35 + board.height,
   15,
   400
 );
@@ -97,7 +97,7 @@ function redraw() {
   checkPoint();
   retractHoop();
 
-  drawText(`Your score: ${score}`, 25, 50, "40px serif", "#ececec");
+  drawText(`Score: ${score}`, 25, 50, "40px Helvetica", "#aaaaaa");
 
   drawRectangle(pole.x, pole.y, pole.width, pole.height, "#4d4d4d");
   drawRectangle(board.x, board.y, board.width, board.height, "#d8d8d8");
@@ -271,13 +271,17 @@ function onMouseMove(e: MouseEvent) {
   let clickX = e.pageX - canvas.offsetLeft;
   let clickY = e.pageY - canvas.offsetTop;
 
+  if (distanceBetween([clickX, clickY], ball.position) < 10) {
+    ball.speed = [0, 0];
+    return;
+  }
+
   ball.speed = [
     (clickX - ball.position[0]) / 2,
     (clickY - ball.position[1]) / 2,
   ];
 
   let speedMagnitude = getBallSpeedMagnitude();
-  console.log(speedMagnitude);
   if (speedMagnitude > speedLimit) {
     let coefficient = speedMagnitude / speedLimit;
     ball.speed = [ball.speed[0] / coefficient, ball.speed[1] / coefficient];
@@ -298,7 +302,7 @@ function BasketballCaptcha(props: any) {
       id="canvas"
       className="basketBallCanvas"
       width="1000"
-      height="500"
+      height="750"
     />
   );
 }
