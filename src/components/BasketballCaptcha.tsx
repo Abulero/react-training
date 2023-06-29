@@ -1,4 +1,6 @@
+import { useState } from "react";
 import "../BasketballCaptcha.css";
+import HackerText from "./HackerText";
 
 class Ball {
   position: number[] = [0, 0];
@@ -45,9 +47,10 @@ var canvas: any;
 var ctx: CanvasRenderingContext2D;
 var scoringPosition = false;
 var score = 0;
+var timeLeft = 20;
 var readyToScore = true;
 var retractDistance = 100;
-var trapScore = 4;
+var trapScore = 2;
 var canvasWidth = 1000;
 var canvasHeight = 750;
 var timeLapse = 10;
@@ -98,6 +101,7 @@ function redraw() {
   retractHoop();
 
   drawText(`Score: ${score}`, 25, 50, "40px Helvetica", "#aaaaaa");
+  drawText(`Time: ${timeLeft}s`, 800, 50, "40px Helvetica", "#aaaaaa");
 
   drawRectangle(pole.x, pole.y, pole.width, pole.height, "#4d4d4d");
   drawRectangle(board.x, board.y, board.width, board.height, "#d8d8d8");
@@ -294,6 +298,25 @@ function getBallSpeedMagnitude(): number {
 
 function BasketballCaptcha(props: any) {
   if (!props.ready) return <></>;
+
+  const [timesUp, setTimesUp] = useState(false);
+
+  function tickTimer() {
+    timeLeft--;
+
+    if (timeLeft == 0) setTimesUp(true);
+  }
+
+  setInterval(tickTimer, 1000);
+
+  if (timesUp)
+    return (
+      <HackerText
+        stopText={false}
+        messages={["Time's up, robot"]}
+        onEndEvent={() => {}}
+      />
+    );
 
   setInterval(redraw, timeLapse);
 
