@@ -43,14 +43,22 @@ class Form {
 
 var canvas: any;
 var ctx: CanvasRenderingContext2D;
+var scoringPosition = false;
+var score = 0;
+var readyToScore = true;
+var retractDistance = 100;
+var trapScore = 5;
 var canvasWidth = 1000;
 var canvasHeight = 500;
 var timeLapse = 10;
 var gravity = 0.75;
 var currentGravity = gravity;
 var gravitySpeedLimit = 25;
+var speedLimit = 25;
 var bounceCoefficient = 0.5;
 var attritionCoefficient = 0.95;
+var initialHoopX: number;
+var finalRetractedHoopX: number;
 
 var board: Form = new Form(canvasWidth * 0.9 - 2, canvasHeight * 0.2, 19, 90);
 var pole: Form = new Form(
@@ -60,12 +68,6 @@ var pole: Form = new Form(
   400
 );
 var hoop: Form = new Form(board.x - 75, board.y + board.height - 10, 75, 10);
-var hoopEdge: Form = new Form(
-  board.x - 75,
-  board.y + board.height - 10,
-  10,
-  10
-);
 var ball: Ball = new Ball(100, 200, 25);
 
 function getCanvas() {
@@ -77,7 +79,8 @@ function getCanvas() {
   canvas.onmousedown = onMouseDown;
   canvas.onmouseup = onMouseUp;
 
-  console.log("Obtained canvas");
+  initialHoopX = hoop.x;
+  finalRetractedHoopX = initialHoopX + 100;
 }
 
 function clear() {
@@ -91,18 +94,14 @@ function redraw() {
 
   applyMovement();
   applyBounce();
-  hoopEscape();
+  checkPoint();
+  retractHoop();
+
+  drawText(`Your score: ${score}`, 25, 50, "40px serif", "#ececec");
 
   drawRectangle(pole.x, pole.y, pole.width, pole.height, "#4d4d4d");
   drawRectangle(board.x, board.y, board.width, board.height, "#d8d8d8");
   drawRectangle(hoop.x, hoop.y, hoop.width, hoop.height, "#ec4224");
-  drawRectangle(
-    hoopEdge.x,
-    hoopEdge.y,
-    hoopEdge.width,
-    hoopEdge.height,
-    "#d43519"
-  );
 
   drawCircle(ball.position[0], ball.position[1], ball.radius, "#d49933");
 }
@@ -127,6 +126,7 @@ function applyBounce() {
     ball.position[1] = canvasHeight - ball.radius;
     ball.speed[1] = -ball.speed[1] * bounceCoefficient;
     ball.speed[0] = ball.speed[0] * attritionCoefficient;
+    readyToScore = true;
   }
 
   // Y - Ceiling
@@ -155,11 +155,74 @@ function applyBounce() {
     ball.topEdge < board.y + board.height
   ) {
     ball.position[0] = board.x - ball.radius;
-    ball.speed[0] = -ball.speed[0];
+    ball.speed[0] = -ball.speed[0] * 0.25;
   }
 }
 
-function hoopEscape() {}
+function checkPoint() {
+  if (scoringPosition && ballBelowHoop() && score < trapScore && readyToScore) {
+    score++;
+    readyToScore = false;
+  }
+
+  if (ballAboveHoop()) scoringPosition = true;
+  else scoringPosition = false;
+}
+
+function ballAboveHoop(): boolean {
+  return (
+    ball.position[0] >= hoop.x &&
+    ball.position[0] <= hoop.x + hoop.width &&
+    ball.position[1] <= hoop.y &&
+    ball.position[1] >= hoop.y - 25
+  );
+}
+
+function ballBelowHoop(): boolean {
+  return (
+    ball.position[0] >= hoop.x &&
+    ball.position[0] <= hoop.x + hoop.width &&
+    ball.position[1] <= hoop.y + 25 &&
+    ball.position[1] >= hoop.y
+  );
+}
+
+function retractHoop() {
+  if (
+    score == trapScore &&
+    readyToScore &&
+    distanceBetween(ball.position, [board.x, board.y + board.height]) <
+      retractDistance
+  )
+    if (hoop.x > finalRetractedHoopX) {
+      hoop.x = hoop.x + 20;
+    } else {
+      hoop.x = finalRetractedHoopX;
+    }
+  else {
+    if (hoop.x > initialHoopX) {
+      hoop.x = hoop.x - 1;
+    } else {
+      hoop.x = initialHoopX;
+    }
+  }
+}
+
+function distanceBetween(a: number[], b: number[]): number {
+  return Math.sqrt(Math.pow(b[0] - a[0], 2) + Math.pow(b[1] - a[1], 2));
+}
+
+function drawText(
+  content: string,
+  x: number,
+  y: number,
+  font: string,
+  color: string
+) {
+  ctx.fillStyle = color;
+  ctx.font = font;
+  ctx.fillText(content, x, y);
+}
 
 function drawRectangle(
   x: number,
@@ -212,6 +275,17 @@ function onMouseMove(e: MouseEvent) {
     (clickX - ball.position[0]) / 2,
     (clickY - ball.position[1]) / 2,
   ];
+
+  let speedMagnitude = getBallSpeedMagnitude();
+  console.log(speedMagnitude);
+  if (speedMagnitude > speedLimit) {
+    let coefficient = speedMagnitude / speedLimit;
+    ball.speed = [ball.speed[0] / coefficient, ball.speed[1] / coefficient];
+  }
+}
+
+function getBallSpeedMagnitude(): number {
+  return Math.sqrt(Math.pow(ball.speed[0], 2) + Math.pow(ball.speed[1], 2));
 }
 
 function BasketballCaptcha(props: any) {

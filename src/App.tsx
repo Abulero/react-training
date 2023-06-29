@@ -12,7 +12,12 @@ function App() {
         <HackerText
           messages={[
             "Hello, there",
-            "Take a look at the cool canvas thing I built",
+            "Congratulations... !",
+            "You are the visitor #1.000",
+            "You just got a 99% discount coupon",
+            "To use it, please solve the captcha on the right",
+            "Prove you're not a robot...",
+            "By scoring 5 points. Good luck !",
           ]}
           onEndEvent={() => setReady(true)}
         />
