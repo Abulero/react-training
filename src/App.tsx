@@ -16,6 +16,7 @@ function App() {
     <div className="grid-container">
       <div className="column1">
         <HackerText
+          elementId={0}
           stopText={stopText}
           messages={[
             "Hello, there",
@@ -23,7 +24,7 @@ function App() {
             "You are the 1.000.000th visitor",
             "You just got a 99% discount coupon",
             "To use it, solve the captcha on the right",
-            "If you're not a robot, score 5 points",
+            "If you're not a robot, score 3 points",
             "Good luck",
           ]}
           onEndEvent={() => showCaptcha()}

@@ -1,26 +1,33 @@
 import React from "react";
 
 type Props = {
+  elementId: number;
   stopText: boolean;
   messages: string[];
   onEndEvent: () => void;
 };
 
 function HackerText(props: Props) {
-  let textElements = generateTextElements(props.messages);
-  manageHackerTexts(props.stopText, props.messages, props.onEndEvent);
+  let textElements = generateTextElements(props.elementId, props.messages);
+  manageHackerTexts(
+    props.elementId,
+    props.stopText,
+    props.messages,
+    props.onEndEvent
+  );
 
   return <>{textElements}</>;
 }
 
 function manageHackerTexts(
+  elementId: number,
   stopText: boolean,
   messages: string[],
   onEndEvent: () => void
 ) {
   let typingSpeed = 50;
 
-  let textElements = getTextElements(messages);
+  let textElements = getTextElements(elementId, messages);
   let timer: NodeJS.Timer;
   let currentTextElementIndex = 0;
   let currentTargetMessage = messages[currentTextElementIndex];
@@ -93,14 +100,17 @@ function manageHackerTexts(
   });
 }
 
-function generateTextElements(message: Array<string>) {
+function generateTextElements(elementId: number, message: Array<string>) {
   var textElements = [
-    <h1 id="hackerMessageElement0" key="hackerMessageElement0"></h1>,
+    <h1
+      id={`hackerMessageElement${elementId}0`}
+      key={`hackerMessageElement${elementId}0`}
+    ></h1>,
   ];
 
   for (var i = 1; i < message.length; i++) {
     let stringIndex = i.toString();
-    let newId = `hackerMessageElement${stringIndex}`;
+    let newId = `hackerMessageElement${elementId}${stringIndex}`;
     let newElement = <p id={newId} key={newId}></p>;
 
     textElements.push(newElement);
@@ -109,11 +119,11 @@ function generateTextElements(message: Array<string>) {
   return textElements;
 }
 
-function getTextElements(messages: string[]) {
+function getTextElements(elementId: number, messages: string[]) {
   let textElements = new Array<HTMLElement>();
   for (var i = 0; i < messages.length; i++) {
     let element = document.getElementById(
-      `hackerMessageElement${i.toString()}`
+      `hackerMessageElement${elementId}${i.toString()}`
     );
 
     if (element) textElements.push(element);

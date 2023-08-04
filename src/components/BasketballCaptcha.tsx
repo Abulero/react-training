@@ -62,6 +62,8 @@ var bounceCoefficient = 0.5;
 var attritionCoefficient = 0.95;
 var initialHoopX: number;
 var finalRetractedHoopX: number;
+var readyToKickSound = true;
+var sounds: Record<string, HTMLAudioElement>;
 
 var board: Form = new Form(canvasWidth * 0.9 - 2, canvasHeight * 0.35, 19, 90);
 var pole: Form = new Form(
@@ -75,6 +77,8 @@ var ball: Ball = new Ball(100, 200, 25);
 
 function getCanvas() {
   if (canvas != null) return;
+
+  sounds = { kick: new Audio("/kick.wav"), swish: new Audio("/swish.wav") };
 
   canvas = document.getElementById("canvas");
   ctx = canvas.getContext("2d");
@@ -105,9 +109,10 @@ function redraw() {
 
   drawRectangle(pole.x, pole.y, pole.width, pole.height, "#4d4d4d");
   drawRectangle(board.x, board.y, board.width, board.height, "#d8d8d8");
-  drawRectangle(hoop.x, hoop.y, hoop.width, hoop.height, "#ec4224");
 
   drawCircle(ball.position[0], ball.position[1], ball.radius, "#d49933");
+
+  drawRectangle(hoop.x, hoop.y, hoop.width, hoop.height, "#ec4224");
 }
 
 function applyMovement() {
@@ -124,6 +129,12 @@ function applyMovement() {
   ];
 }
 
+function playSound(file: string) {
+  sounds[file].pause();
+  sounds[file].currentTime = 0;
+  sounds[file].play();
+}
+
 function applyBounce() {
   // Y - Floor
   if (ball.bottomEdge > canvasHeight) {
@@ -131,6 +142,13 @@ function applyBounce() {
     ball.speed[1] = -ball.speed[1] * bounceCoefficient;
     ball.speed[0] = ball.speed[0] * attritionCoefficient;
     readyToScore = true;
+
+    if (readyToKickSound) {
+      playSound("kick");
+      readyToKickSound = false;
+    }
+  } else if (ball.bottomEdge < canvasHeight - 10) {
+    readyToKickSound = true;
   }
 
   // Y - Ceiling
@@ -167,6 +185,8 @@ function checkPoint() {
   if (scoringPosition && ballBelowHoop() && score < trapScore && readyToScore) {
     score++;
     readyToScore = false;
+
+    playSound("swish");
   }
 
   if (ballAboveHoop()) scoringPosition = true;
@@ -311,9 +331,11 @@ function BasketballCaptcha(props: any) {
 
   if (timesUp)
     return (
+      //<p>Be gone !</p>
       <HackerText
+        elementId={1}
         stopText={false}
-        messages={["Time's up, robot"]}
+        messages={["Time's up...", "Begone !"]}
         onEndEvent={() => {}}
       />
     );
